@@ -1,0 +1,8 @@
+{
+    "name": "mharj/ldap",
+    "autoload": {
+        "psr-0" : {
+            "\\" : "src"
+        }
+    }
+}
