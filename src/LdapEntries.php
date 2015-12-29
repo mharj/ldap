@@ -18,6 +18,11 @@ class LdapEntries implements \Iterator {
 		}
 	}
 	
+	public function sort($attr) {
+		ldap_sort($this->ds,$this->sr,$attr);
+		return $this;
+	}
+	
 	public function length () {
 		return ldap_count_entries($this->ds,$this->sr);
 	}
