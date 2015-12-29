@@ -69,9 +69,6 @@ class Ldap {
 			default:
 				throw new LdapException("Unknown query scope");
 		}
-		if ( $query->sort != null ) {
-			ldap_sort($this->ds,$sr,$query->sort);
-		}
 		restore_error_handler();
 		return new LdapEntries($this->ds,$sr);
 	}
