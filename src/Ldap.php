@@ -1,5 +1,8 @@
 <?php
 defined('LDAP_PROXIED_CONTROL') or define('LDAP_PROXIED_CONTROL', '2.16.840.1.113730.3.4.18');
+defined('LDAP_SCOPE_BASE') or define('LDAP_SCOPE_BASE', 0);
+defined('LDAP_SCOPE_ONELEVEL') or define('LDAP_SCOPE_ONELEVEL', 1);
+defined('LDAP_SCOPE_SUBTREE') or define('LDAP_SCOPE_SUBTREE',2);
 
 class Ldap {
 	public $ds = null;
@@ -48,6 +51,29 @@ class Ldap {
 			throw new LdapException("Could not set Proxy Auth");
 		}
 		restore_error_handler();
+	}
+	
+	
+	public function query(LdapQuery $query) {
+		set_error_handler( $this->eh );
+		switch( $query->scope ) {
+			case LDAP_SCOPE_SUBTREE:
+				$sr = ldap_search($this->ds,$query->base,$query->filter,$query->attrs,0,$query->sizeLimit,$query->timeLimit,$query->deref);
+				break;
+			case LDAP_SCOPE_ONELEVEL:
+				$sr = ldap_list($this->ds,$query->base,$query->filter,$query->attrs,0,$query->sizeLimit,$query->timeLimit,$query->deref);
+				break;
+			case LDAP_SCOPE_BASE:
+				$sr = ldap_read($this->ds,$query->base,$query->filter,$query->attrs,0,$query->sizeLimit,$query->timeLimit,$query->deref);
+				break; 
+			default:
+				throw new LdapException("Unknown query scope");
+		}
+		if ( $query->sort != null ) {
+			ldap_sort($this->ds,$sr,$query->sort);
+		}
+		restore_error_handler();
+		return new LdapEntries($this->ds,$sr);
 	}
 	
 	public function search ($base,$filer,$attrs,$sort="") {
@@ -127,18 +153,19 @@ class Ldap {
 		ldap_mod_del($this->ds,$dn,$mod);
 		restore_error_handler();
 	}
+	
 	// LDAP error wrapper
 	private function log_ldap_errors ($num,$str) {
 		switch ( ldap_errno($this->ds) ) {
-			case 4:		$this->lastException = new LdapSizeException( $str, $num ,null ); // size limit hit, throw when deleting iterator
+			case 0x04:	$this->lastException = new LdapSizeException( $str, $num ,null );	// LDAP_SIZELIMIT_EXCEEDED
 						break;
-			case 11:	$this->lastException = new LdapSizeException( $str, $num ,null ); // admin size limit hit, throw when deleting iterator
+			case 0x0b:	$this->lastException = new LdapSizeException( $str, $num ,null );	// LDAP_ADMINLIMIT_EXCEEDED
 						break;
-			case 49:	throw new LdapBindException( $str, $num ,null );
-			case 50:	throw new LdapPermissionException( $str, $num ,null );
-			case 34:	throw new LdapBindException( $str, $num ,null ); // Invalid DN syntax
-			case 32:	throw new LdapNotFoundException( $str, $num ,null );
+			case 0x31:	throw new LdapBindException( $str, $num ,null );					// LDAP_INVALID_CREDENTIALS
+			case 0x32:	throw new LdapPermissionException( $str, $num ,null );				// LDAP_INSUFFICIENT_ACCESS        
+			case 0x20:	throw new LdapNotFoundException( $str, $num ,null );				// LDAP_NO_SUCH_OBJECT
 			default:	throw new LdapException( $str, $num ,null );
 		}
 	}
 }
+
