@@ -13,7 +13,6 @@ try {
 	foreach( $entries->sort('uid') AS $entry ) {
 		print_r($entry);
 	}
-	$ldap->close();
 } catch( LdapException $ex ) {
 	echo $ex->getMessage();
 }
