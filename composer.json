@@ -1,8 +1,14 @@
 {
     "name": "mharj/ldap",
+    "type": "library",
+    "keywords": ["ldap"],
+    "require": {
+        "php": ">=5.3.0",
+        "ext-ldap": "*"
+    },
     "autoload": {
         "psr-4" : {
-            "\\" : "src"
+            "\\" : "src/"
         }
     }
 }
