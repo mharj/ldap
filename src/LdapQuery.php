@@ -1,5 +1,5 @@
 <?php
-
+namespace mharj;
 class LdapQuery {
 	public $base;
 	public $filter;
