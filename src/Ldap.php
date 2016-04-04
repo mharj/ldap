@@ -1,4 +1,5 @@
 <?php
+namespace mharj;
 defined('LDAP_PROXIED_CONTROL') or define('LDAP_PROXIED_CONTROL', '2.16.840.1.113730.3.4.18');
 defined('LDAP_SCOPE_BASE') or define('LDAP_SCOPE_BASE', 0);
 defined('LDAP_SCOPE_ONELEVEL') or define('LDAP_SCOPE_ONELEVEL', 1);
