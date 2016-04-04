@@ -1,5 +1,5 @@
 <?php
-
+namespace mharj;
 class LdapEntries implements \Iterator {
 	private $ds;
 	private $sr;
