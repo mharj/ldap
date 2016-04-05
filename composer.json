@@ -4,8 +4,7 @@
     "keywords": ["ldap"],
     "require": {
         "php": ">=5.3.0",
-        "ext-ldap": "*",
-        "ext-mbstring": "*"
+        "ext-ldap": "*"
     },
     "autoload": {
         "psr-4" : {
