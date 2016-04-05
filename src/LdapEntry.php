@@ -31,7 +31,7 @@ class LdapEntry extends \stdClass {
     foreach ( $ret AS $k => $v ) {
       if ( is_array($v) ) {
         foreach ( $v AS $vk => $vv ) {
-          mb_convert_encoding($v,'UTF-8','UTF-8');
+          mb_convert_encoding($vv,'UTF-8','UTF-8');
           $v[$vk]=$vv;
         }
         sort($v);
