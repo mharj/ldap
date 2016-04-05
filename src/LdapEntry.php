@@ -9,7 +9,12 @@ class LdapEntry extends \stdClass {
     $source = $this->sort($this->dropInternal( (array)$this ) );
     return (json_encode($target)==json_encode($source));
   }
-  
+  public function debugEquals(LdapEntry $entry) {
+    $target = $this->sort($this->dropInternal( (array)$entry ) );
+    $source = $this->sort($this->dropInternal( (array)$this ) );
+    echo $target."\n";
+    echo $source."\n";
+  }  
   private function dropInternal(array $a) {
     $ret = $a;
     foreach ( LdapEntry::$dropInternalAttrs AS $attr ) {
