@@ -31,5 +31,6 @@ class LdapEntry extends \stdClass {
         $ret[$k]=$v;
       }
     }
+    return $ret;
   }
 }
