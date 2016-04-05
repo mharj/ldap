@@ -14,7 +14,7 @@ class LdapEntry extends \stdClass {
     $ret = $a;
     foreach ( LdapEntry::$dropInternalAttrs AS $attr ) {
       if ( isset($ret[$attr]) ) {
-        unset($ret[$attr])
+        unset($ret[$attr]);
       }
     }
     return $ret;
