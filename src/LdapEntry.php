@@ -7,9 +7,7 @@ class LdapEntry extends \stdClass {
   public function equals(LdapEntry $entry) {
     $target = $this->sort($this->dropInternal( (array)$entry ) );
     $source = $this->sort($this->dropInternal( (array)$this ) );
-    echo json_encode($target)."\n";
-    echo json_encode($source)."\n";
-    return false;
+    return (json_encode($target)==json_encode($source));
   }
   
   private function dropInternal(array $a) {
