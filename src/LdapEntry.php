@@ -12,8 +12,8 @@ class LdapEntry extends \stdClass {
   public function debugEquals(LdapEntry $entry) {
     $target = $this->sort($this->dropInternal( (array)$entry ) );
     $source = $this->sort($this->dropInternal( (array)$this ) );
-    echo $target."\n";
-    echo $source."\n";
+    echo json_encode($target)."\n";
+    echo json_encode($source)."\n";
   }  
   private function dropInternal(array $a) {
     $ret = $a;
