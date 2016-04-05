@@ -33,7 +33,7 @@ class LdapEntries implements \Iterator {
     }
 	
     public function current () {
-		$obj = new \stdClass();	// new empty object
+		$obj = new LdapEntry();	// new empty object
 		$obj->dn = ldap_get_dn($this->ds,$this->entry);	// attach dn
 		$attrs = ldap_get_attributes($this->ds, $this->entry);	// attach attributes
 		for ( $i=0;$i<$attrs['count'];$i++) {
