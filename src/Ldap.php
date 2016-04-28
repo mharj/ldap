@@ -159,7 +159,8 @@ class Ldap {
 						break;
 			case 0x0b:	$this->lastException = new LdapSizeException( $str, $num ,null );	// LDAP_ADMINLIMIT_EXCEEDED
 						break;
-			case 0x31:	throw new LdapBindException( $str, $num ,null );					// LDAP_INVALID_CREDENTIALS
+			case 0x44:	throw new LdapAlreadyExistsException( $str, $num ,null );			// LDAP_ALREADY_EXISTS
+			case 0x31:	throw new LdapBindException( $str, $num ,null );				// LDAP_INVALID_CREDENTIALS
 			case 0x32:	throw new LdapPermissionException( $str, $num ,null );				// LDAP_INSUFFICIENT_ACCESS        
 			case 0x20:	throw new LdapNotFoundException( $str, $num ,null );				// LDAP_NO_SUCH_OBJECT
 			default:	throw new LdapException( $str, $num ,null );
