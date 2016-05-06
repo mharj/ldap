@@ -55,7 +55,7 @@ class Ldap {
 	}
 	
 	
-	public function query(LdapQuery $query) {
+	public function query(LdapQuery $query): LdapEntries {
 		set_error_handler( $this->eh );
 		switch( $query->scope ) {
 			case LDAP_SCOPE_SUBTREE:
@@ -74,7 +74,7 @@ class Ldap {
 		return new LdapEntries($this->ds,$sr);
 	}
 	
-	public function search ($base,$filer,$attrs) {
+	public function search ($base,$filer,$attrs): LdapEntries {
 		set_error_handler( $this->eh );
 		$sr = ldap_search($this->ds,$base,$filer,$attrs);
 		if ( $sr == false ) {
@@ -85,7 +85,7 @@ class Ldap {
 		return new LdapEntries($this->ds,$sr,$this->lastException);
 	}
 	
-	public function read ($base,$filer,$attrs) {
+	public function read ($base,$filer,$attrs): LdapEntries {
 		set_error_handler( $this->eh );
 		$sr = ldap_read($this->ds,$base,$filer,$attrs);
 		restore_error_handler();
