@@ -74,17 +74,12 @@ class Ldap {
 		return new LdapEntries($this->ds,$sr);
 	}
 	
-	public function search ($base,$filer,$attrs,$sort="") {
+	public function search ($base,$filer,$attrs) {
 		set_error_handler( $this->eh );
 		$sr = ldap_search($this->ds,$base,$filer,$attrs);
 		if ( $sr == false ) {
 			restore_error_handler();
 			throw new LdapException(ldap_error($this->ds));
-		}
-		if ( ! empty($sort) ) {
-			if ( preg_match("/^5\./",PHP_VERSION) ) { // ldap_sort DEPRECATED in 7.x
-				ldap_sort($this->ds,$sr,$sort);
-			}
 		}
 		restore_error_handler();
 		return new LdapEntries($this->ds,$sr,$this->lastException);
