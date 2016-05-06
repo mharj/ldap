@@ -82,7 +82,9 @@ class Ldap {
 			throw new LdapException(ldap_error($this->ds));
 		}
 		if ( ! empty($sort) ) {
-			ldap_sort($this->ds,$sr,$sort);
+			if ( preg_match("/^5\./",PHP_VERSION) ) { // ldap_sort DEPRECATED in 7.x
+				ldap_sort($this->ds,$sr,$sort);
+			}
 		}
 		restore_error_handler();
 		return new LdapEntries($this->ds,$sr,$this->lastException);
