@@ -10,7 +10,7 @@ class Ldap {
 	private $lastException = null;
 	private $eh;
 	
-	public function __construct ($obj,$port=389) {
+	public function __construct (string $obj,int $port=389) {
 		$this->eh = array(&$this, 'log_ldap_errors');
 		if ( is_string($obj) ) { // new connection
 			set_error_handler( $this->eh );
@@ -32,10 +32,10 @@ class Ldap {
 			set_error_handler( $this->eh );
 			ldap_bind($this->ds,$dn,$password);
 		} catch( LdapNotFoundException $e) {
-			restore_error_handler();
 			throw new LdapBindException($e->getMessage(),$e->getCode());
-		} 
-		restore_error_handler();
+		} finally {
+			restore_error_handler();
+		}
 	}
 	
 	
@@ -91,7 +91,7 @@ class Ldap {
 		restore_error_handler();
 		return new LdapEntries($this->ds,$sr);
 	}
-	
+
 	public function setOption ($option,$value) {
 		set_error_handler( $this->eh );
 		ldap_set_option($this->ds,$option,$value);
@@ -151,6 +151,7 @@ class Ldap {
 	
 	// LDAP error wrapper
 	private function log_ldap_errors ($num,$str) {
+		$num = ldap_errno($this->ds); // get LDAP error code instead
 		switch ( ldap_errno($this->ds) ) {
 			case 0x04:	$this->lastException = new LdapSizeException( $str, $num ,null );	// LDAP_SIZELIMIT_EXCEEDED
 						break;

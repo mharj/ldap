@@ -1,1 +1,4 @@
-tests
+settings.ini
+composer.lock
+phpunit*
+vendor

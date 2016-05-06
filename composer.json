@@ -6,6 +6,9 @@
         "php": ">=7.0.0",
         "ext-ldap": "*"
     },
+	"require-dev": {
+        "phpunit/phpunit": "*"
+    },
     "autoload": {
         "psr-4" : {
             "mharj\\" : "src/"
