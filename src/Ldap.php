@@ -164,5 +164,8 @@ class Ldap {
 			default:	throw new LdapException( $str, $num ,null );
 		}
 	}
+	public static function getTimestampAsDateTime(string $date): \DateTime {
+		return \DateTime::createFromFormat("YmdGise",$date);
+	}
 }
 
