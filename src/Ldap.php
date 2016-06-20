@@ -10,16 +10,18 @@ class Ldap {
 	private $lastException = null;
 	private $eh;
 	
-	public function __construct (string $obj,int $port=389) {
+	public function __construct ($obj,int $port=389) {
 		$this->eh = array(&$this, 'log_ldap_errors');
 		if ( is_string($obj) ) { // new connection
 			set_error_handler( $this->eh );
 			$this->ds = ldap_connect($obj,$port);
 			restore_error_handler();
 		} else if ( is_resource($obj) == true  && get_resource_type($obj) == 'ldap link' ) { // reuse connection
-			$this->ds = &$obj;
+                    $this->ds = &$obj;
+                } else if ( $obj instanceof Ldap ) {
+                    $this->ds = $obj->ds;
 		} else {
-			throw new LdapException("Invalid parameter");
+                    throw new LdapException("Invalid parameter");
 		}
 	}
 	

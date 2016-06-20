@@ -29,6 +29,20 @@ class LdapTest extends PHPUnit_Framework_TestCase {
 		$ldap->bind();
 	}
 
+	public function testAnonBindCopyResource() {
+		$ini = parse_ini_file("settings.ini",true);
+		$ldap = new Ldap($ini['ldap']['host'],$ini['ldap']['port']);
+		$ldap->bind();
+                $ldap2 = new Ldap($ldap->ds);
+	}        
+
+	public function testAnonBindCopyClass() {
+		$ini = parse_ini_file("settings.ini",true);
+		$ldap = new Ldap($ini['ldap']['host'],$ini['ldap']['port']);
+		$ldap->bind();
+                $ldap2 = new Ldap($ldap);
+	}        
+        
 	/**
      * @expectedException mharj\LdapBindException
      */	
