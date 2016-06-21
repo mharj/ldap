@@ -40,9 +40,6 @@ class LdapEntries implements \Iterator {
 		}
 		unset($attrs['count']);
 		foreach ( $attrs AS $key => $a ) {
-			$key=preg_replace("/\;/","_",$key); // change ';' => '_' as ';' is not valid in object key name 
-			$kname = strtolower($key);
-			$obj->$kname=$a;
 			if ( isset($a['count']) ) {
 				unset($a['count']);
 			}
@@ -50,7 +47,7 @@ class LdapEntries implements \Iterator {
 			foreach ( $a AS $v ) {
 				$values[]=$v;
 			}
-			$obj->setAttribute(new LdapAttribute($key,$values));
+			$obj->addAttribute(new LdapAttribute($key,$values));
 		}
 		return $obj;		
     }

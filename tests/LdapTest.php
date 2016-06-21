@@ -150,6 +150,7 @@ class LdapTest extends PHPUnit_Framework_TestCase {
 	public function testAdminWrite() {
 		$ini = parse_ini_file("settings.ini",true);
 		$ldap = new Ldap($ini['ldap']['host'],$ini['ldap']['port']);
+		$ldap->setOption(LDAP_OPT_PROTOCOL_VERSION,3);
 		$ldap->bind($ini['ldap']['admindn'],$ini['ldap']['adminpasswd']);
 		list($name)=ldap_explode_dn($ini['ldap']['createoudn'],true);
 		// check & remove old test
@@ -161,10 +162,11 @@ class LdapTest extends PHPUnit_Framework_TestCase {
 			// ok
 		}
 		// 
-		$ldap->add($ini['ldap']['createoudn'],array('objectclass'=>array('top','organizationalUnit'),'ou'=>$name));
-		foreach ($ldap->read($ini['ldap']['createoudn'],"objectclass=top",array('dn','objectclass')) AS $e ) {
+		$ldap->add($ini['ldap']['createoudn'],array('objectclass'=>array('top','organizationalUnit'),'ou'=>$name,'description;lang-en'=>'test','description;lang-de;SubTest'=>'este','description'=>'main'));
+		foreach ($ldap->read($ini['ldap']['createoudn'],"objectclass=top",array('dn','objectclass','description')) AS $e ) {
 			$this->assertEquals($e->getDn(), $ini['ldap']['createoudn']);
 			$this->assertEquals(true,in_array('top',$e->objectclass->getValues()));
+			$this->assertEquals(2,count($e->getAttributes("description",array(null,'lang-de','dummy'))));
 		}
 		$ldap->modAdd($ini['ldap']['createoudn'],array('description'=>'test'));
 		$ldap->modReplace($ini['ldap']['createoudn'],array('description'=>'tset'));

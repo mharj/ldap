@@ -4,7 +4,17 @@ namespace mharj;
 class LdapAttribute implements \ArrayAccess,\Countable  {
 	private $values;
 	private $name;
+	private $keys = array();
+	private $crc;
 	public function __construct(string $name,$values=null) {
+		$this->crc = crc32(strtolower($name));
+		if ( preg_match("/;/",$name ) ) { // multipart name
+			$parts = explode(";",$name);
+			$name = array_shift($parts);
+			foreach($parts AS $key ) {
+				$this->keys[]=strtolower(trim($key));
+			}
+		}
 		$this->name = $name;
 		if ( is_null($values) ) {
 			$this->values = null;
@@ -19,6 +29,12 @@ class LdapAttribute implements \ArrayAccess,\Countable  {
 	
 	public function getValues() {
 		return $this->values;
+	}
+	public function getKeys() {
+		return $this->keys;
+	}
+	public function getHash() {
+		return $this->crc;
 	}
 	// Array Access functions = []
 	public function offsetExists($offset) {
@@ -44,5 +60,5 @@ class LdapAttribute implements \ArrayAccess,\Countable  {
 	public function count($mode = 'COUNT_NORMAL') {
 		return count($this->values);
 	}
-
+	
 }
