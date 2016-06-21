@@ -33,8 +33,7 @@ class LdapEntries implements \Iterator {
     }
 	
     public function current () {
-		$obj = new LdapEntry();	// new empty object
-		$obj->dn = ldap_get_dn($this->ds,$this->entry);	// attach dn
+		$obj = new LdapEntry( ldap_get_dn($this->ds,$this->entry) );	// new empty object
 		$attrs = ldap_get_attributes($this->ds, $this->entry);	// attach attributes
 		for ( $i=0;$i<$attrs['count'];$i++) {
 			unset($attrs[$i]);
@@ -44,6 +43,14 @@ class LdapEntries implements \Iterator {
 			$key=preg_replace("/\;/","_",$key); // change ';' => '_' as ';' is not valid in object key name 
 			$kname = strtolower($key);
 			$obj->$kname=$a;
+			if ( isset($a['count']) ) {
+				unset($a['count']);
+			}
+			$values = array();
+			foreach ( $a AS $v ) {
+				$values[]=$v;
+			}
+			$obj->setAttribute(new LdapAttribute($key,$values));
 		}
 		return $obj;		
     }

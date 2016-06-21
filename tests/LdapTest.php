@@ -162,8 +162,9 @@ class LdapTest extends PHPUnit_Framework_TestCase {
 		}
 		// 
 		$ldap->add($ini['ldap']['createoudn'],array('objectclass'=>array('top','organizationalUnit'),'ou'=>$name));
-		foreach ($ldap->read($ini['ldap']['createoudn'],"objectclass=top",array('dn')) AS $e ) {
-			$this->assertEquals($e->dn, $ini['ldap']['createoudn']);
+		foreach ($ldap->read($ini['ldap']['createoudn'],"objectclass=top",array('dn','objectclass')) AS $e ) {
+			$this->assertEquals($e->getDn(), $ini['ldap']['createoudn']);
+			$this->assertEquals(true,in_array('top',$e->objectclass->getValues()));
 		}
 		$ldap->modAdd($ini['ldap']['createoudn'],array('description'=>'test'));
 		$ldap->modReplace($ini['ldap']['createoudn'],array('description'=>'tset'));
