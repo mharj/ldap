@@ -1,3 +1,3 @@
 <?php
 namespace mharj;
-class LdapException extends \Exception {}
+class LdapException extends \ErrorException {}

@@ -152,20 +152,25 @@ class Ldap {
 	}
 	
 	// LDAP error wrapper
-	private function log_ldap_errors ($num,$str) {
-		$num = ldap_errno($this->ds); // get LDAP error code instead
+	private function log_ldap_errors ($num,$str,$file,$line,$context) {
+		$num = ldap_errno($this->ds); // get LDAP error codes instead
 		switch ( ldap_errno($this->ds) ) {
-			case 0x04:	$this->lastException = new LdapSizeException( $str, $num ,null );	// LDAP_SIZELIMIT_EXCEEDED
+			case 0x04:	$this->lastException = new LdapSizeException($str,$num,E_WARNING,$file,$line,null);	// LDAP_SIZELIMIT_EXCEEDED
 						break;
-			case 0x0b:	$this->lastException = new LdapSizeException( $str, $num ,null );	// LDAP_ADMINLIMIT_EXCEEDED
+			case 0x0b:	$this->lastException = new LdapSizeException($str,$num,E_WARNING,$file,$line,null);	// LDAP_ADMINLIMIT_EXCEEDED
 						break;
-			case 0x44:	throw new LdapAlreadyExistsException( $str, $num ,null );			// LDAP_ALREADY_EXISTS
-			case 0x31:	throw new LdapBindException( $str, $num ,null );				// LDAP_INVALID_CREDENTIALS
-			case 0x32:	throw new LdapPermissionException( $str, $num ,null );				// LDAP_INSUFFICIENT_ACCESS        
-			case 0x20:	throw new LdapNotFoundException( $str, $num ,null );				// LDAP_NO_SUCH_OBJECT
-			default:	throw new LdapException( $str, $num ,null );
+			case 0x44:	throw new LdapAlreadyExistsException($str, $num ,E_ERROR,$file,$line,null);			// LDAP_ALREADY_EXISTS
+			case 0x31:	throw new LdapBindException($str, $num ,E_ERROR,$file,$line,null);					// LDAP_INVALID_CREDENTIALS				
+			case 0x32:	throw new LdapPermissionException($str, $num ,E_ERROR,$file,$line,null);			// LDAP_INSUFFICIENT_ACCESS        
+			case 0x20:	throw new LdapNotFoundException($str, $num ,E_ERROR,$file,$line,null);				// LDAP_NO_SUCH_OBJECT
+			default:	throw new LdapException($str, $num ,E_ERROR,$file,$line,null);
 		}
 	}
+	
+	/**
+	 * Convert Ldap Timestamp as DateTime
+	 * @return DateTime
+	 */
 	public static function getTimestampAsDateTime(string $date): \DateTime {
 		return \DateTime::createFromFormat("YmdGise",$date);
 	}
